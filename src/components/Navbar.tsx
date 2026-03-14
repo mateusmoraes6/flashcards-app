@@ -1,12 +1,20 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "@/utils/supabase/client";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const supabase = createClient();
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
 
   return (
     <motion.header
@@ -16,7 +24,7 @@ export default function Navbar() {
       className="fixed top-0 inset-x-0 z-50 border-b border-border glass"
     >
       <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 group">
+        <Link href="/dashboard" className="flex items-center gap-2.5 group">
           <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center shadow-[0_0_16px_rgba(99,102,241,0.5)] group-hover:shadow-[0_0_24px_rgba(99,102,241,0.7)] transition-shadow">
             <span className="text-sm font-bold text-white font-display">L</span>
           </div>
@@ -24,15 +32,15 @@ export default function Navbar() {
         </Link>
 
         <nav className="flex items-center gap-1">
-          <NavLink href="/" active={pathname === "/"}>Cards</NavLink>
+          <NavLink href="/dashboard" active={pathname === "/dashboard"}>Cards</NavLink>
           <NavLink href="/review" active={pathname === "/review"}>Revisar</NavLink>
           <NavLink href="/stats" active={pathname === "/stats"}>Stats</NavLink>
 
           <div className="h-5 w-px bg-border mx-2" />
 
-          <Link href="/login" className="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors">
-            Entrar
-          </Link>
+          <button onClick={handleLogout} className="px-3 py-1.5 text-sm font-medium text-slate-400 hover:text-red-400 transition-colors">
+            Sair
+          </button>
 
           {/* + dropdown */}
           <div className="relative ml-2">
