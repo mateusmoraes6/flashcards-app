@@ -28,6 +28,12 @@ export default function Navbar() {
           <NavLink href="/review" active={pathname === "/review"}>Revisar</NavLink>
           <NavLink href="/stats" active={pathname === "/stats"}>Stats</NavLink>
 
+          <div className="h-5 w-px bg-border mx-2" />
+
+          <Link href="/login" className="px-3 py-1.5 text-sm font-medium text-slate-300 hover:text-white transition-colors">
+            Entrar
+          </Link>
+
           {/* + dropdown */}
           <div className="relative ml-2">
             <button
