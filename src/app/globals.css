@@ -1,0 +1,129 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --perspective: 1200px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #080b12;
+  color: #f0f4ff;
+  font-family: "DM Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #080b12;
+}
+::-webkit-scrollbar-thumb {
+  background: #1f2740;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2a3550;
+}
+
+/* Card flip */
+.card-scene {
+  perspective: var(--perspective);
+  width: 100%;
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.card-face-back {
+  transform: rotateY(180deg);
+}
+
+/* Glass morphism */
+.glass {
+  background: rgba(14, 19, 32, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Noise texture overlay */
+.noise::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0.5;
+}
+
+/* Gradient mesh bg */
+.mesh-bg {
+  background-color: #080b12;
+  background-image: radial-gradient(
+      ellipse 80% 50% at 20% 10%,
+      rgba(99, 102, 241, 0.08) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 60% 40% at 80% 80%,
+      rgba(34, 211, 238, 0.05) 0%,
+      transparent 50%
+    );
+}
+
+/* Shimmer gradient for loading */
+.shimmer-line {
+  background: linear-gradient(
+    90deg,
+    #1c2235 25%,
+    #2a3550 50%,
+    #1c2235 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Focus ring */
+*:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #f0f4ff;
+}
