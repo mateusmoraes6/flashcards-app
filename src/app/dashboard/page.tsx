@@ -102,6 +102,9 @@ export default function HomePage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Link href="/new" className="sm:hidden px-3 py-1.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-xs font-medium transition-all shadow-[0_4px_12px_rgba(99,102,241,0.25)] flex items-center gap-1.5">
+              <span>+</span> Novo
+            </Link>
             <button onClick={handleExport} disabled={cards.length === 0}
               title="Exportar como JSON"
               className="px-3 py-1.5 border border-border text-text-3 hover:text-text hover:border-border-light rounded-lg text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5">
@@ -139,16 +142,7 @@ export default function HomePage() {
               );
             })}
 
-            <div className="ml-auto flex items-center gap-2">
-              <span className="text-xs text-text-3">Ordenar:</span>
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortKey)}
-                className="bg-surface border border-border rounded-lg px-2.5 py-1 text-xs text-text focus:outline-none focus:border-accent transition-colors appearance-none cursor-pointer">
-                <option value="createdAt">Mais recentes</option>
-                <option value="front">Alfabética</option>
-                <option value="mastery">Domínio</option>
-                <option value="accuracy">Mais difíceis</option>
-              </select>
-            </div>
+
           </motion.div>
         )}
 
