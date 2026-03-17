@@ -7,6 +7,7 @@ import FlashcardCard from "@/components/FlashcardCard";
 import EmptyState from "@/components/EmptyState";
 import { useFlashcards } from "@/hooks/useFlashcards";
 import { LANGUAGE_FLAGS } from "@/types/flashcard";
+import NewCardMenu from "@/components/NewCardMenu";
 
 type SortKey = "createdAt" | "front" | "mastery" | "accuracy";
 
@@ -102,9 +103,9 @@ export default function HomePage() {
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/new" className="sm:hidden px-3 py-1.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-xs font-medium transition-all shadow-[0_4px_12px_rgba(99,102,241,0.25)] flex items-center gap-1.5">
-              <span>+</span> Novo
-            </Link>
+            <div className="sm:hidden">
+              <NewCardMenu variant="page" />
+            </div>
             <button onClick={handleExport} disabled={cards.length === 0}
               title="Exportar como JSON"
               className="px-3 py-1.5 border border-border text-text-3 hover:text-text hover:border-border-light rounded-lg text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5">
