@@ -1,11 +1,22 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import Modal from "./Modal";
+import FlashcardForm from "./FlashcardForm";
+import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { Flashcard, LANGUAGE_FLAGS, MASTERY_LABELS, MASTERY_COLORS } from "@/types/flashcard";
 
-interface Props { card: Flashcard; index: number; onDelete: (id: string) => void; }
+interface Props { 
+  card: Flashcard; 
+  index: number; 
+  onDelete: (id: string) => void;
+  onUpdate: (id: string, data: Partial<Flashcard>) => void;
+}
 
-export default function FlashcardCard({ card, index, onDelete }: Props) {
+export default function FlashcardCard({ card, index, onDelete, onUpdate }: Props) {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const flag = LANGUAGE_FLAGS[card.language] ?? "🌍";
   const mastery = card.masteryLevel ?? 0;
   const masteryColor = MASTERY_COLORS[mastery];
@@ -56,15 +67,34 @@ export default function FlashcardCard({ card, index, onDelete }: Props) {
           )}
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-          <Link href={`/edit/${card.id}`}
+          <button onClick={() => setIsEditOpen(true)}
             className="p-1.5 rounded-lg text-text-3 hover:text-accent hover:bg-accent-dim transition-all duration-150" title="Editar">
             <EditIcon />
-          </Link>
-          <button onClick={() => { if (confirm(`Deletar "${card.front}"?`)) onDelete(card.id); }}
+          </button>
+          <button onClick={() => setIsDeleteOpen(true)}
             className="p-1.5 rounded-lg text-text-3 hover:text-red-400 hover:bg-red-500/10 transition-all duration-150" title="Deletar">
             <TrashIcon />
           </button>
         </div>
+
+        {/* Modals */}
+        <Modal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} title="Editar Flashcard">
+          <FlashcardForm 
+            isEdit 
+            initialData={card} 
+            onSubmit={(data) => {
+              onUpdate(card.id, data);
+              setIsEditOpen(false);
+            }} 
+          />
+        </Modal>
+
+        <ConfirmDeleteModal 
+          isOpen={isDeleteOpen} 
+          onClose={() => setIsDeleteOpen(false)} 
+          onConfirm={() => onDelete(card.id)}
+          title={card.front}
+        />
       </div>
     </motion.div>
   );

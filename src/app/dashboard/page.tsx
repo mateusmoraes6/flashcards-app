@@ -11,7 +11,7 @@ import { LANGUAGE_FLAGS } from "@/types/flashcard";
 type SortKey = "createdAt" | "front" | "mastery" | "accuracy";
 
 export default function HomePage() {
-  const { cards, isLoaded, deleteCard, importCards } = useFlashcards();
+  const { cards, isLoaded, deleteCard, updateCard, importCards } = useFlashcards();
   const [search, setSearch] = useState("");
   const [filterLang, setFilterLang] = useState("all");
   const [filterMastery, setFilterMastery] = useState("all");
@@ -185,7 +185,7 @@ export default function HomePage() {
           ) : (
             <AnimatePresence mode="popLayout">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filtered.map((card, i) => <FlashcardCard key={card.id} card={card} index={i} onDelete={deleteCard} />)}
+                {filtered.map((card, i) => <FlashcardCard key={card.id} card={card} index={i} onDelete={deleteCard} onUpdate={updateCard} />)}
               </div>
             </AnimatePresence>
           )

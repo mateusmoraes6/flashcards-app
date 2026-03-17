@@ -47,6 +47,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
   const handleSubmit = (data: Omit<Flashcard, "id" | "createdAt">) => {
     updateCard(id, data);
+    router.push("/dashboard");
   };
 
   return (
