@@ -16,11 +16,10 @@ export default function NewCardMenu({ variant = "header" }: Props) {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-1.5 font-medium transition-all duration-200 active:scale-95 ${
-          isHeader 
+        className={`flex items-center gap-1.5 font-medium transition-all duration-200 active:scale-95 ${isHeader
             ? "px-3.5 py-1.5 bg-accent hover:bg-accent-hover text-white text-sm rounded-lg shadow-[0_0_12px_rgba(99,102,241,0.35)] hover:shadow-[0_0_20px_rgba(99,102,241,0.5)]"
             : "px-3 py-1.5 bg-accent hover:bg-accent-hover text-white rounded-lg text-xs shadow-[0_4px_12px_rgba(99,102,241,0.25)]"
-        }`}
+          }`}
       >
         {isHeader ? (
           <>

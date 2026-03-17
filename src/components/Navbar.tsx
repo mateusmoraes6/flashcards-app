@@ -52,18 +52,17 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
-                  isActive 
-                    ? "bg-accent/10 border border-accent/20 text-accent" 
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${isActive
+                    ? "bg-accent/10 border border-accent/20 text-accent"
                     : "text-text-2 hover:text-text hover:bg-surface-3"
-                }`}
+                  }`}
               >
                 <div className={`${isActive ? "text-accent" : "text-text-3 group-hover:text-text-2"}`}>
                   {item.icon}
                 </div>
                 <span className="font-medium text-sm hidden lg:block">{item.label}</span>
                 {isActive && (
-                  <motion.div 
+                  <motion.div
                     layoutId="activePill"
                     className="absolute left-0 w-1 h-6 bg-accent rounded-r-full hidden lg:block"
                   />
@@ -77,11 +76,10 @@ export default function Navbar() {
           {/* Settings Link */}
           <Link
             href="/settings"
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
-              pathname === "/settings" 
-                ? "bg-accent/10 border border-accent/20 text-accent" 
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${pathname === "/settings"
+                ? "bg-accent/10 border border-accent/20 text-accent"
                 : "text-text-2 hover:text-text hover:bg-surface-3"
-            }`}
+              }`}
           >
             <div className={`${pathname === "/settings" ? "text-accent" : "text-text-3 group-hover:text-text-2"}`}>
               <SettingsIcon />
@@ -91,7 +89,7 @@ export default function Navbar() {
 
           {/* User Profile / Logout */}
           <div className="relative">
-            <button 
+            <button
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex items-center gap-3 w-full px-2 py-2 rounded-xl hover:bg-surface-3 transition-all"
             >
@@ -137,9 +135,8 @@ export default function Navbar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex flex-col items-center justify-center gap-1 w-16 h-full transition-all ${
-                isActive ? "text-accent" : "text-text-3"
-              }`}
+              className={`flex flex-col items-center justify-center gap-1 w-16 h-full transition-all ${isActive ? "text-accent" : "text-text-3"
+                }`}
             >
               {item.icon}
               <span className="text-[10px] font-medium">{item.label}</span>
@@ -151,9 +148,8 @@ export default function Navbar() {
         })}
         <Link
           href="/settings"
-          className={`flex flex-col items-center justify-center gap-1 w-16 h-full transition-all ${
-            pathname === "/settings" ? "text-accent" : "text-text-3"
-          }`}
+          className={`flex flex-col items-center justify-center gap-1 w-16 h-full transition-all ${pathname === "/settings" ? "text-accent" : "text-text-3"
+            }`}
         >
           <SettingsIcon />
           <span className="text-[10px] font-medium">Conta</span>
