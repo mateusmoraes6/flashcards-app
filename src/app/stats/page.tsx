@@ -57,9 +57,9 @@ export default function StatsPage() {
   const maxSession = Math.max(...stats.last7Sessions.map((s) => s.total), 1);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
       <Navbar />
-      <main className="max-w-4xl mx-auto px-6 pt-24 pb-16">
+      <main className="max-w-4xl mx-auto px-6 pt-8 pb-16">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <p className="text-xs font-mono text-accent uppercase tracking-widest mb-2">Estatísticas</p>
           <h1 className="font-display text-4xl font-bold text-text tracking-tight">Seu progresso</h1>

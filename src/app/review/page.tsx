@@ -121,13 +121,21 @@ export default function ReviewPage() {
   }, [flipped, answered, goNext, handleAnswer, mode]);
 
   if (!isLoaded) {
-    return <div className="min-h-screen"><Navbar /><div className="flex items-center justify-center min-h-screen"><div className="w-96 h-64 rounded-3xl shimmer-line" /></div></div>;
+    return (
+      <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+          <div className="w-96 h-64 rounded-3xl shimmer-line" />
+        </div>
+      </div>
+    );
   }
 
   if (cards.length === 0) {
     return (
-      <div className="min-h-screen"><Navbar />
-        <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
             <div className="text-5xl mb-4">🃏</div>
             <h2 className="font-display text-2xl font-bold text-text mb-2">Nenhum flashcard</h2>
@@ -145,8 +153,9 @@ export default function ReviewPage() {
     const weakCount = Math.min(20, cards.filter((c) => (c.timesReviewed ?? 0) > 0).length);
 
     return (
-      <div className="min-h-screen"><Navbar />
-        <div className="flex items-center justify-center min-h-screen px-6">
+      <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-6">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-md">
             <div className="text-center mb-8">
               <p className="text-xs font-mono text-accent uppercase tracking-widest mb-2">Modo de revisão</p>
@@ -194,8 +203,9 @@ export default function ReviewPage() {
 
   if (!current || total === 0) {
     return (
-      <div className="min-h-screen"><Navbar />
-        <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
+        <Navbar />
+        <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
             <div className="text-4xl mb-4">{MODE_CONFIG[mode].icon}</div>
             <h2 className="font-display text-xl font-bold text-text mb-2">Nenhum card neste modo</h2>
@@ -211,9 +221,9 @@ export default function ReviewPage() {
   const modeColor = MODE_CONFIG[mode].color;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-6 pt-24 pb-16 flex flex-col min-h-screen">
+      <main className="max-w-2xl mx-auto px-6 pt-8 pb-16 flex flex-col min-h-[calc(100vh-80px)]">
         {/* Top bar */}
         <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -361,8 +371,9 @@ function CompletedScreen({ total, correct, mode, onBack, onRetry, answers, deck 
   }, [accuracy]);
 
   return (
-    <div className="min-h-screen"><Navbar />
-      <div className="flex items-center justify-center min-h-screen px-6">
+    <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
+      <Navbar />
+      <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-6">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15, type: "spring", stiffness: 200 }} className="text-6xl mb-6 text-center">
             {accuracy >= 80 ? "🎉" : accuracy >= 50 ? "💪" : "📚"}

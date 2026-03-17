@@ -52,9 +52,9 @@ export default function BulkPage() {
   const validSelected = parsed.filter((_, i) => selected.has(i) && parsed[i].valid).length;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
       <Navbar />
-      <main className="max-w-2xl mx-auto px-6 pt-24 pb-16">
+      <main className="max-w-2xl mx-auto px-6 pt-8 pb-16">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <p className="text-xs font-mono text-accent uppercase tracking-widest mb-2">Importação em lote</p>
           <h1 className="font-display text-3xl font-bold text-text tracking-tight">Adicionar vários cards</h1>

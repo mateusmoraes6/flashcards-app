@@ -13,9 +13,9 @@ export default function NewPage() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen md:pl-20 lg:pl-64 pb-20 md:pb-0">
       <Navbar />
-      <main className="max-w-xl mx-auto px-6 pt-24 pb-16">
+      <main className="max-w-xl mx-auto px-6 pt-8 pb-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
