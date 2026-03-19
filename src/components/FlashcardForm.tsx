@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Flashcard, LANGUAGES, CATEGORIES, LANGUAGE_FLAGS } from "@/types/flashcard";
+import { Flashcard, LANGUAGES, LANGUAGE_FLAGS } from "@/types/flashcard";
+import { useFlashcards } from "@/hooks/useFlashcards";
 
 interface Props {
   initialData?: Partial<Flashcard>;
@@ -12,6 +13,7 @@ interface Props {
 
 export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) {
   const router = useRouter();
+  const { categories } = useFlashcards();
   const [form, setForm] = useState({
     front: initialData?.front ?? "",
     back: initialData?.back ?? "",
@@ -94,7 +96,7 @@ export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) 
             <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
               className="w-full bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-text text-sm focus:outline-none focus:border-accent transition-colors appearance-none cursor-pointer">
               <option value="">— Nenhuma —</option>
-              {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
             </select>
           </div>
         </div>
@@ -180,3 +182,4 @@ export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) 
     </motion.div>
   );
 }
+

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import { useFlashcards } from "@/hooks/useFlashcards";
-import { LANGUAGES, LANGUAGE_FLAGS, CATEGORIES } from "@/types/flashcard";
+import { LANGUAGES, LANGUAGE_FLAGS } from "@/types/flashcard";
 
 interface ParsedRow { front: string; back: string; notes?: string; valid: boolean; error?: string; }
 
@@ -22,7 +22,7 @@ function parseText(raw: string): ParsedRow[] {
 
 export default function BulkPage() {
   const router = useRouter();
-  const { addCards } = useFlashcards();
+  const { addCards, categories } = useFlashcards();
   const [text, setText] = useState("");
   const [language, setLanguage] = useState("Inglês");
   const [category, setCategory] = useState("");
@@ -88,11 +88,12 @@ export default function BulkPage() {
                   <select value={category} onChange={(e) => setCategory(e.target.value)}
                     className="w-full bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-text text-sm focus:outline-none focus:border-accent transition-colors appearance-none">
                     <option value="">— Nenhuma —</option>
-                    {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+                    {categories.map((c) => <option key={c.id} value={c.name}>{c.name}</option>)}
                   </select>
                 </div>
               </div>
 
+              {/* Rest of the component remains the same */}
               <div>
                 <label className="block text-xs font-medium text-text-3 uppercase tracking-wider mb-1.5">Lista de palavras</label>
                 <textarea
@@ -181,3 +182,4 @@ export default function BulkPage() {
     </div>
   );
 }
+

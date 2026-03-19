@@ -6,6 +6,7 @@ import Modal from "./Modal";
 import FlashcardForm from "./FlashcardForm";
 import ConfirmDeleteModal from "./ConfirmDeleteModal";
 import { Flashcard, LANGUAGE_FLAGS, MASTERY_LABELS, MASTERY_COLORS } from "@/types/flashcard";
+import { useFlashcards } from "@/hooks/useFlashcards";
 
 interface Props { 
   card: Flashcard; 
@@ -15,8 +16,13 @@ interface Props {
 }
 
 export default function FlashcardCard({ card, index, onDelete, onUpdate }: Props) {
+  const { categories } = useFlashcards();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  
+  const categoryData = categories.find((c: any) => c.name === card.category);
+  const catColor = categoryData?.color || "var(--accent)";
+
   const flag = LANGUAGE_FLAGS[card.language] ?? "🌍";
   const mastery = card.masteryLevel ?? 0;
   const masteryColor = MASTERY_COLORS[mastery];
@@ -42,7 +48,16 @@ export default function FlashcardCard({ card, index, onDelete, onUpdate }: Props
           <span>{flag}</span>{card.language}
         </span>
         {card.category && (
-          <span className="px-2.5 py-1 rounded-full bg-accent-dim border border-accent/20 text-xs font-medium text-accent">{card.category}</span>
+          <span 
+            className="px-2.5 py-1 rounded-full text-xs font-semibold"
+            style={{ 
+              backgroundColor: `${catColor}15`, 
+              color: catColor,
+              border: `1px solid ${catColor}30`
+            }}
+          >
+            {card.category}
+          </span>
         )}
         <span className="ml-auto px-2 py-0.5 rounded-full text-xs font-medium border" style={{ color: masteryColor, borderColor: masteryColor + "40", background: masteryColor + "10" }}>
           {MASTERY_LABELS[mastery]}

@@ -1,10 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { Flashcard, ReviewSession } from "@/types/flashcard";
+import { Flashcard, ReviewSession, Category, DEFAULT_CATEGORIES } from "@/types/flashcard";
 import { v4 as uuidv4 } from "uuid";
 
 const STORAGE_KEY = "lexiflash_cards";
 const SESSIONS_KEY = "lexiflash_sessions";
+const CATEGORIES_KEY = "lexiflash_categories";
 
 const SAMPLE_CARDS: Flashcard[] = [
   { id: uuidv4(), front: "Serendipity", back: "Encontrar algo bom sem estar procurando", notes: "\"It was pure serendipity that we met.\"", language: "Inglês", category: "Cotidiano", createdAt: new Date().toISOString(), masteryLevel: 0, timesReviewed: 0, timesCorrect: 0 },
@@ -26,6 +27,7 @@ function computeMastery(timesReviewed: number, timesCorrect: number): 0 | 1 | 2 
 export function useFlashcards() {
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [sessions, setSessions] = useState<ReviewSession[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -33,9 +35,18 @@ export function useFlashcards() {
       const raw = localStorage.getItem(STORAGE_KEY);
       setCards(raw ? JSON.parse(raw) : SAMPLE_CARDS);
       if (!raw) localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_CARDS));
+
       const rawS = localStorage.getItem(SESSIONS_KEY);
       setSessions(rawS ? JSON.parse(rawS) : []);
-    } catch { setCards([]); }
+
+      const rawC = localStorage.getItem(CATEGORIES_KEY);
+      setCategories(rawC ? JSON.parse(rawC) : DEFAULT_CATEGORIES);
+      if (!rawC) localStorage.setItem(CATEGORIES_KEY, JSON.stringify(DEFAULT_CATEGORIES));
+
+    } catch { 
+      setCards([]); 
+      setCategories(DEFAULT_CATEGORIES);
+    }
     setIsLoaded(true);
   }, []);
 
@@ -47,6 +58,11 @@ export function useFlashcards() {
   const persistSessions = useCallback((updated: ReviewSession[]) => {
     setSessions(updated);
     localStorage.setItem(SESSIONS_KEY, JSON.stringify(updated));
+  }, []);
+
+  const persistCategories = useCallback((updated: Category[]) => {
+    setCategories(updated);
+    localStorage.setItem(CATEGORIES_KEY, JSON.stringify(updated));
   }, []);
 
   const addCard = useCallback((data: Omit<Flashcard, "id" | "createdAt">) => {
@@ -93,7 +109,30 @@ export function useFlashcards() {
   const clearAllData = useCallback(() => {
     persist([]);
     persistSessions([]);
-  }, [persist, persistSessions]);
+    persistCategories(DEFAULT_CATEGORIES);
+  }, [persist, persistSessions, persistCategories]);
+
+  // Categories CRUD
+  const addCategory = useCallback((name: string, color?: string, icon?: string) => {
+    const category: Category = { id: uuidv4(), name, color, icon };
+    persistCategories([...categories, category]);
+    return category;
+  }, [categories, persistCategories]);
+
+  const updateCategory = useCallback((id: string, data: Partial<Omit<Category, "id">>) => {
+    persistCategories(categories.map((c) => (c.id === id ? { ...c, ...data } : c)));
+  }, [categories, persistCategories]);
+
+  const deleteCategory = useCallback((id: string) => {
+    const category = categories.find((c) => c.id === id);
+    if (category) {
+      const updatedCards = cards.map((c) => 
+        c.category === category.name ? { ...c, category: undefined } : c
+      );
+      persist(updatedCards);
+    }
+    persistCategories(categories.filter((c) => c.id !== id));
+  }, [categories, cards, persist, persistCategories]);
 
   // Returns cards sorted by difficulty (weak cards first)
   const weakCards = useCallback(() => {
@@ -106,5 +145,11 @@ export function useFlashcards() {
       });
   }, [cards]);
 
-  return { cards, sessions, isLoaded, addCard, addCards, updateCard, deleteCard, getCard, recordAnswer, saveSession, importCards, clearAllData, weakCards };
+  return { 
+    cards, sessions, categories, isLoaded, 
+    addCard, addCards, updateCard, deleteCard, getCard, recordAnswer, 
+    saveSession, importCards, clearAllData, weakCards,
+    addCategory, updateCategory, deleteCategory
+  };
 }
+
