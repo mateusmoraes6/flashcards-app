@@ -15,7 +15,7 @@ export default function SettingsPage() {
   useEffect(() => {
     // Check if app is already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
-       setIsInstalled(true);
+      setIsInstalled(true);
     }
 
     const handleBeforeInstallPrompt = (e: any) => {
@@ -33,13 +33,13 @@ export default function SettingsPage() {
 
   const handleInstallClick = async () => {
     if (!deferredPrompt) return;
-    
+
     // Show the install prompt
     deferredPrompt.prompt();
-    
+
     // Wait for the user to respond to the prompt
     const { outcome } = await deferredPrompt.userChoice;
-    
+
     if (outcome === 'accepted') {
       console.log('User accepted the install prompt');
       setIsInstallable(false);
@@ -101,7 +101,7 @@ export default function SettingsPage() {
                   <div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full shadow-sm" />
                 </div>
               </div>
-              
+
               <div className="flex items-center justify-between p-4 bg-surface-2/50 rounded-xl border border-border/30">
                 <div>
                   <p className="text-text font-medium">Lembrete de Estudo</p>
@@ -125,8 +125,8 @@ export default function SettingsPage() {
                 <div>
                   <p className="text-text font-medium">Instalar LexiFlash</p>
                   <p className="text-text-3 text-xs">
-                    {isInstalled 
-                      ? "O aplicativo já está instalado no seu dispositivo." 
+                    {isInstalled
+                      ? "O aplicativo já está instalado no seu dispositivo."
                       : "Baixe o aplicativo para usar offline e ter acesso rápido pela tela inicial."}
                   </p>
                 </div>
@@ -134,11 +134,10 @@ export default function SettingsPage() {
                   <button
                     onClick={handleInstallClick}
                     disabled={!isInstallable}
-                    className={`px-6 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${
-                      isInstallable 
-                        ? "bg-accent text-white shadow-lg shadow-accent/20 hover:bg-accent/90" 
+                    className={`px-6 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isInstallable
+                        ? "bg-accent text-white shadow-lg shadow-accent/20 hover:bg-accent/90"
                         : "bg-border text-text-3 cursor-not-allowed"
-                    }`}
+                      }`}
                   >
                     {isInstallable ? "Instalar agora" : "Já instalado ou não suportado"}
                   </button>
@@ -157,7 +156,7 @@ export default function SettingsPage() {
 
           {/* About Section */}
           <section className="bg-surface border border-border rounded-2xl p-6">
-             <h2 className="text-lg font-bold text-text mb-4 flex items-center gap-2">
+            <h2 className="text-lg font-bold text-text mb-4 flex items-center gap-2">
               <span className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm">✨</span>
               Sobre o App
             </h2>
