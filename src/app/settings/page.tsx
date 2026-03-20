@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useFlashcards } from "@/hooks/useFlashcards";
 import { Category } from "@/types/flashcard";
 import Modal from "@/components/Modal";
+import CategoryWordsModal from "@/components/CategoryWordsModal";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -209,6 +210,7 @@ function CategoryManager() {
   const [newName, setNewName] = useState("");
   const [selectedColor, setSelectedColor] = useState("#818CF8");
   const [catToDelete, setCatToDelete] = useState<Category | null>(null);
+  const [catToView, setCatToView] = useState<Category | null>(null);
 
   const handleAdd = () => {
     if (!newName.trim()) return;
@@ -298,7 +300,8 @@ function CategoryManager() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="group flex items-center justify-between p-3 bg-surface-2/30 border border-border/30 rounded-xl hover:border-border/60 transition-all"
+                className="group flex items-center justify-between p-3 bg-surface-2/30 border border-border/30 rounded-xl hover:border-accent/40 hover:bg-surface-3/40 transition-all cursor-pointer"
+                onClick={() => setCatToView(cat)}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="w-3 h-3 rounded-full shadow-sm flex-shrink-0" style={{ backgroundColor: cat.color }} />
@@ -308,7 +311,10 @@ function CategoryManager() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setCatToDelete(cat)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCatToDelete(cat);
+                  }}
                   className="opacity-0 group-hover:opacity-100 p-2 text-text-3 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
                   title="Excluir categoria"
                 >
@@ -365,6 +371,16 @@ function CategoryManager() {
           </Modal>
         )}
       </AnimatePresence>
+
+      {/* View Category Words Modal (Duolingo Style) */}
+      {catToView && (
+        <CategoryWordsModal
+          isOpen={!!catToView}
+          onClose={() => setCatToView(null)}
+          category={catToView}
+          cards={cards}
+        />
+      )}
     </div>
   );
 }
