@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "@/utils/supabase/client";
 import NewCardMenu from "@/components/NewCardMenu";
@@ -11,6 +11,15 @@ export default function Navbar() {
   const router = useRouter();
   const supabase = createClient();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    fetchUser();
+  }, [supabase.auth]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -93,11 +102,13 @@ export default function Navbar() {
               onClick={() => setIsProfileOpen(!isProfileOpen)}
               className="flex items-center gap-3 w-full px-2 py-2 rounded-xl hover:bg-surface-3 transition-all"
             >
-              <div className="w-8 h-8 rounded-full bg-surface-3 border border-border flex items-center justify-center text-xs font-bold text-text-2">
-                U
+              <div className="w-8 h-8 rounded-full bg-accent border border-accent/20 flex items-center justify-center text-[10px] font-bold text-white uppercase">
+                {user?.user_metadata?.full_name?.[0] || user?.email?.[0] || "?"}
               </div>
               <div className="flex-1 text-left hidden lg:block">
-                <p className="text-xs font-bold text-text truncate tracking-tight leading-none mb-0.5">Usuário</p>
+                <p className="text-xs font-bold text-text truncate tracking-tight leading-none mb-0.5">
+                  {user?.user_metadata?.full_name?.split(" ")[0] || "Usuário"}
+                </p>
                 <p className="text-[10px] text-text-3 truncate leading-none">Minha conta</p>
               </div>
             </button>

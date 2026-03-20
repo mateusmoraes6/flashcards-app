@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
@@ -10,6 +10,7 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +27,11 @@ export default function LoginPage() {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            data: {
+              full_name: name || email.split("@")[0],
+            }
+          }
         });
         if (error) throw error;
         // Optionally, you can redirect or show a "Check your email" message here.
@@ -115,6 +121,38 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
+              {/* Name Input (Sign Up only) */}
+              <AnimatePresence>
+                {isSignUp && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-1.5 overflow-hidden"
+                  >
+                    <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
+                      Nome
+                    </label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-500 group-focus-within:text-indigo-400 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                          <circle cx="12" cy="7" r="4" />
+                        </svg>
+                      </div>
+                      <input
+                        type="text"
+                        required={isSignUp}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        className="w-full bg-[#0d121f]/50 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/50 transition-all backdrop-blur-md"
+                        placeholder="Como podemos te chamar?"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
               {/* Email Input */}
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-300 uppercase tracking-wider ml-1">
