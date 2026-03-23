@@ -109,11 +109,11 @@ export default function HomePage() {
             <button onClick={handleExport} disabled={cards.length === 0}
               title="Exportar como JSON"
               className="px-3 py-1.5 border border-border text-text-3 hover:text-text hover:border-border-light rounded-lg text-xs font-medium transition-all disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1.5">
-              <span>↓</span> Exportar
+              <DownloadIcon /> Exportar
             </button>
             <button onClick={() => fileRef.current?.click()} title="Importar JSON"
               className="px-3 py-1.5 border border-border text-text-3 hover:text-text hover:border-border-light rounded-lg text-xs font-medium transition-all flex items-center gap-1.5">
-              <span>↑</span> Importar
+              <UploadIcon /> Importar
             </button>
             <input ref={fileRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
           </div>
@@ -122,10 +122,10 @@ export default function HomePage() {
         {/* Stats */}
         {isLoaded && cards.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <StatCard value={stats.total} label="Total" icon="🃏" />
-            <StatCard value={stats.newCards} label="Novos" icon="✨" color="#22D3EE" />
-            <StatCard value={stats.totalReviewed} label="Revisados" icon="👁️" />
-            <StatCard value={stats.mastered} label="Dominados" icon="⭐" color="#F59E0B" />
+            <StatCard value={stats.total} label="Total" icon={<CardsIcon />} />
+            <StatCard value={stats.newCards} label="Novos" icon={<SparklesIcon />} color="#22D3EE" />
+            <StatCard value={stats.totalReviewed} label="Revisados" icon={<EyeIcon />} />
+            <StatCard value={stats.mastered} label="Dominados" icon={<StarIcon />} color="#F59E0B" />
           </motion.div>
         )}
 
@@ -213,14 +213,70 @@ export default function HomePage() {
   );
 }
 
-function StatCard({ value, label, icon, color }: { value: number; label: string; icon: string; color?: string }) {
+function StatCard({ value, label, icon, color }: { value: number; label: string; icon: React.ReactNode; color?: string }) {
   return (
     <div className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
-      <span className="text-xl">{icon}</span>
+      <div className="text-accent" style={color ? { color } : {}}>{icon}</div>
       <div>
         <p className="font-display text-2xl font-bold leading-none mb-0.5" style={{ color: color ?? "var(--text)" }}>{value}</p>
-        <p className="text-xs text-text-2">{label}</p>
+        <p className="text-[10px] text-text-3 font-medium uppercase tracking-wider">{label}</p>
       </div>
     </div>
+  );
+}
+
+// Icons
+function CardsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="12" height="18" x="8" y="2" rx="2" />
+      <path d="M4 6V22a2 2 0 0 0 2 2H18" />
+    </svg>
+  );
+}
+
+function SparklesIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+      <path d="M5 3v4" /><path d="M3 5h4" /><path d="M19 17v4" /><path d="M17 19h4" />
+    </svg>
+  );
+}
+
+function EyeIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+function StarIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
+function UploadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="17 8 12 3 7 8" />
+      <line x1="12" y1="3" x2="12" y2="15" />
+    </svg>
   );
 }

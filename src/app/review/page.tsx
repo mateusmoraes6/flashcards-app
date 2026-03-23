@@ -37,11 +37,11 @@ function buildDeck(cards: Flashcard[], mode: ReviewMode): Flashcard[] {
   }
 }
 
-const MODE_CONFIG: Record<ReviewMode, { label: string; icon: string; description: string; color: string }> = {
-  all:     { label: "Todos",     icon: "🃏", description: "Revise todos os cards em ordem",         color: "#6366F1" },
-  shuffle: { label: "Aleatório", icon: "🔀", description: "Ordem embaralhada aleatoriamente",        color: "#818CF8" },
-  weak:    { label: "Difíceis",  icon: "💪", description: "Foco nos cards com menor taxa de acerto", color: "#F59E0B" },
-  new:     { label: "Novos",     icon: "✨", description: "Apenas cards ainda não revisados",        color: "#22D3EE" },
+const MODE_CONFIG: Record<ReviewMode, { label: string; icon: React.ReactNode; description: string; color: string }> = {
+  all:     { label: "Todos",     icon: <CardsIcon />,   description: "Revise todos os cards em ordem",         color: "#6366F1" },
+  shuffle: { label: "Aleatório", icon: <ShuffleIcon />, description: "Ordem embaralhada aleatoriamente",        color: "#818CF8" },
+  weak:    { label: "Difíceis",  icon: <DumbbellIcon />,description: "Foco nos cards com menor taxa de acerto", color: "#F59E0B" },
+  new:     { label: "Novos",     icon: <SparklesIcon />,description: "Apenas cards ainda não revisados",        color: "#22D3EE" },
 };
 
 export default function ReviewPage() {
@@ -137,7 +137,11 @@ export default function ReviewPage() {
         <Navbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="text-5xl mb-4">🃏</div>
+            <div className="text-accent mb-5 flex justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-border flex items-center justify-center shadow-lg">
+                <CardsIcon />
+              </div>
+            </div>
             <h2 className="font-display text-2xl font-bold text-text mb-2">Nenhum flashcard</h2>
             <p className="text-text-2 mb-6">Crie alguns flashcards antes de revisar.</p>
             <Link href="/new" className="px-5 py-2.5 bg-accent hover:bg-accent-hover text-white rounded-xl font-medium text-sm shadow-[0_0_16px_rgba(99,102,241,0.35)] transition-all">Criar flashcard</Link>
@@ -174,8 +178,8 @@ export default function ReviewPage() {
                       "border-border hover:border-[var(--c)] hover:bg-[var(--c)/5] cursor-pointer active:scale-[0.98]"
                     }`}
                     style={{ "--c": cfg.color } as React.CSSProperties}>
-                    <span className="text-2xl">{cfg.icon}</span>
-                    <div className="flex-1">
+                    <div className="text-2xl" style={{ color: cfg.color }}>{cfg.icon}</div>
+                    <div className="flex-1 ml-1">
                       <p className="font-display font-bold text-text text-base">{cfg.label}</p>
                       <p className="text-xs text-text-3">{cfg.description}</p>
                     </div>
@@ -207,7 +211,11 @@ export default function ReviewPage() {
         <Navbar />
         <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
           <div className="text-center">
-            <div className="text-4xl mb-4">{MODE_CONFIG[mode].icon}</div>
+            <div className="mb-5 flex justify-center" style={{ color: MODE_CONFIG[mode].color }}>
+              <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-border flex items-center justify-center shadow-lg">
+                {MODE_CONFIG[mode].icon}
+              </div>
+            </div>
             <h2 className="font-display text-xl font-bold text-text mb-2">Nenhum card neste modo</h2>
             <button onClick={() => setMode(null)} className="mt-4 text-accent hover:underline text-sm">← Escolher outro modo</button>
           </div>
@@ -216,7 +224,7 @@ export default function ReviewPage() {
     );
   }
 
-  const flag = LANGUAGE_FLAGS[current.language] ?? "🌍";
+  const flag = LANGUAGE_FLAGS[current.language] ?? <GlobeIcon />;
   const mastery = current.masteryLevel ?? 0;
   const modeColor = MODE_CONFIG[mode].color;
 
@@ -232,7 +240,7 @@ export default function ReviewPage() {
             </button>
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="text-sm">{MODE_CONFIG[mode].icon}</span>
+                <span className="text-sm" style={{ color: MODE_CONFIG[mode].color }}>{MODE_CONFIG[mode].icon}</span>
                 <span className="text-xs font-mono text-text-3">{MODE_CONFIG[mode].label}</span>
               </div>
               <p className="font-display text-base font-bold text-text leading-tight">
@@ -375,8 +383,10 @@ function CompletedScreen({ total, correct, mode, onBack, onRetry, answers, deck 
       <Navbar />
       <div className="flex items-center justify-center min-h-[calc(100vh-80px)] px-6">
         <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-md">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15, type: "spring", stiffness: 200 }} className="text-6xl mb-6 text-center">
-            {accuracy >= 80 ? "🎉" : accuracy >= 50 ? "💪" : "📚"}
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.15, type: "spring", stiffness: 200 }} className="mb-6 flex justify-center">
+            <div className="w-20 h-20 rounded-2xl bg-surface border border-border flex items-center justify-center shadow-xl">
+              {accuracy >= 80 ? <PartyIcon /> : accuracy >= 50 ? <BicepIcon /> : <BookIcon />}
+            </div>
           </motion.div>
           <div className="text-center mb-6">
             <h2 className="font-display text-3xl font-bold text-text mb-1">Sessão concluída!</h2>
@@ -421,3 +431,95 @@ function CompletedScreen({ total, correct, mode, onBack, onRetry, answers, deck 
 
 function ArrowLeft() { return <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>; }
 function ArrowRight() { return <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>; }
+
+// Icons
+function CardsIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="12" height="18" x="8" y="2" rx="2" />
+      <path d="M4 6V22a2 2 0 0 0 2 2H18" />
+    </svg>
+  );
+}
+
+function ShuffleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22" />
+      <path d="m18 2 4 4-4 4" />
+      <path d="M2 6h1.9c1.5 0 2.9.9 3.6 2.2" />
+      <path d="M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8" />
+      <path d="m18 14 4 4-4 4" />
+    </svg>
+  );
+}
+
+function DumbbellIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m6.5 6.5 11 11" />
+      <path d="m11.8 5.8 5.2 5.2" />
+      <path d="m11 20 5-5" />
+      <path d="m9 9 5 5" />
+      <path d="m14.5 14.5-5-5" />
+      <path d="M3 21l3-3" />
+      <path d="m18 21 3-3" />
+      <path d="m15 15 3-3" />
+      <path d="m6 6 3-3" />
+      <path d="m3 6 3-3" />
+      <path d="m18 6 3-3" />
+    </svg>
+  );
+}
+
+function SparklesIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
+      <path d="M5 3v4" /><path d="M3 5h4" /><path d="M19 17v4" /><path d="M17 19h4" />
+    </svg>
+  );
+}
+
+function PartyIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22D3EE" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5.8 11.3 2 22l10.7-3.8" />
+      <path d="M4 18c.8-1 1-1.6.8-2.4-.3-.8-.7-1.3-1.5-1.1-1 .3-1.4 1.7-1.3 2.5.2 2 1.5 1.5 2 1" />
+      <path d="M11 11c1-1 1.6-1 2.4-.8.8.3 1.3.7 1.1 1.5-.3 1-1.7 1.4-2.5 1.3-2-.2-1.5-1.5-1-2" />
+      <path d="M15 4c1-1 1.6-1 2.4-.8.8.3 1.3.7 1.1 1.5-.3 1-1.7 1.4-2.5 1.3-2-.2-1.5-1.5-1-2" />
+      <path d="M21 9c1-1 1.6-1 2.4-.8.8.3 1.3.7 1.1 1.5-.3 1-1.7 1.4-2.5 1.3-2-.2-1.5-1.5-1-2" />
+    </svg>
+  );
+}
+
+function BicepIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3.5 12a9 9 0 0 1 9-9" />
+      <path d="M3.5 12h9" />
+      <path d="M12.5 3c2 0 3.5 1.5 3.5 3.5S14.5 10 12.5 10" />
+      <path d="M12.5 21a9 9 0 0 0 9-9" />
+      <path d="M12.5 21h9" />
+      <path d="M21.5 12c0-2-1.5-3.5-3.5-3.5S14.5 10 14.5 12" />
+    </svg>
+  );
+}
+
+function BookIcon() {
+  return (
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#6366F1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+    </svg>
+  );
+}
+
+function GlobeIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}

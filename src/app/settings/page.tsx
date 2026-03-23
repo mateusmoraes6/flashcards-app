@@ -218,8 +218,8 @@ export default function SettingsPage() {
                   </div>
                 </motion.div>
               )}
-            </AnimatePresence>
-          </section>
+              </AnimatePresence>
+            </section>
 
           {/* Categories Section */}
           <section className="bg-surface border border-border rounded-2xl p-6">
@@ -337,10 +337,12 @@ export default function SettingsPage() {
   );
 }
 
+const PRESET_COLORS = ["#818CF8", "#F472B6", "#34D399", "#FBBF24", "#60A5FA", "#A78BFA", "#FB7185", "#4ADE80", "#2DD4BF", "#FACC15", "#94A3B8"];
+
 function CategoryManager() {
   const { categories, cards, addCategory, deleteCategory } = useFlashcards();
   const [newName, setNewName] = useState("");
-  const [selectedColor, setSelectedColor] = useState("#818CF8");
+  const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
   const [catToDelete, setCatToDelete] = useState<Category | null>(null);
   const [catToView, setCatToView] = useState<Category | null>(null);
 
@@ -363,60 +365,64 @@ function CategoryManager() {
 
   return (
     <div className="space-y-6">
-      {/* Add New Category Form - Improved Layout */}
       <div className="p-5 bg-surface-2/40 rounded-2xl border border-border/30 backdrop-blur-sm">
         <label className="block text-[11px] font-bold text-text-3 uppercase tracking-widest mb-4">Nova Categoria</label>
         
-        <div className="flex flex-col gap-3">
-          <div className="flex items-stretch gap-2.5">
-            {/* Unified Color + Input Group */}
-            <div className="flex-1 flex items-center bg-surface-3/50 border border-border rounded-xl focus-within:border-accent transition-all pl-2 group">
-              <div className="relative w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer shadow-sm">
-                <div 
-                  className="w-full h-full transform group-hover:scale-110 transition-transform"
-                  style={{ backgroundColor: selectedColor }}
-                />
-                <input
-                  type="color"
-                  value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  className="absolute inset-0 opacity-0 cursor-pointer w-full h-full scale-150"
-                  title="Cor da categoria"
-                />
-              </div>
+        <div className="space-y-5">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
               <input
                 type="text"
                 value={newName}
                 onChange={(e) => setNewName(e.target.value)}
-                placeholder="Ex: Verbos"
-                className="flex-1 bg-transparent border-none px-3 py-3 text-sm text-text placeholder-text-3 focus:ring-0 outline-none"
+                placeholder="Nome da categoria (Ex: Verbos)"
+                className="w-full bg-surface-3/50 border border-border rounded-xl px-4 py-3 text-sm text-text placeholder-text-3 outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
               />
             </div>
             
-            {/* Add Button - Desktop view (visible in sm+) */}
             <button
               onClick={handleAdd}
               disabled={!newName.trim()}
-              className="hidden sm:flex items-center justify-center px-6 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
+              className="px-6 py-3 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
             >
               Adicionar
             </button>
           </div>
 
-          {/* Color Code & Info (Mobile/Compact context) */}
-          <div className="flex items-center justify-between px-1">
-            <span className="text-[10px] text-text-3 uppercase font-mono tracking-tight bg-surface-3/50 px-2 py-0.5 rounded border border-border/20">{selectedColor}</span>
-            <span className="text-[10px] text-text-3 italic">← toque no ícone para mudar a cor</span>
+          <div className="space-y-3">
+            <p className="text-[10px] text-text-3 font-bold uppercase tracking-wider">Escolha uma cor</p>
+            <div className="flex flex-wrap gap-2.5">
+              {PRESET_COLORS.map((color) => (
+                <button
+                  key={color}
+                  onClick={() => setSelectedColor(color)}
+                  className="relative w-7 h-7 rounded-full transition-all hover:scale-110 active:scale-90 shadow-sm"
+                  style={{ backgroundColor: color }}
+                  title={color}
+                >
+                  {selectedColor === color && (
+                    <motion.div 
+                      layoutId="colorCheck"
+                      className="absolute inset-0 flex items-center justify-center"
+                    >
+                      <div className="w-1.5 h-1.5 rounded-full bg-white shadow-sm" />
+                    </motion.div>
+                  )}
+                </button>
+              ))}
+              
+              <div className="relative w-7 h-7 rounded-full border border-border/50 bg-surface-3 flex items-center justify-center overflow-hidden group">
+                <span className="text-xs text-text-3 group-hover:text-text">+</span>
+                <input
+                  type="color"
+                  value={selectedColor}
+                  onChange={(e) => setSelectedColor(e.target.value)}
+                  className="absolute inset-0 opacity-0 cursor-pointer scale-150"
+                  title="Cor personalizada"
+                />
+              </div>
+            </div>
           </div>
-
-          {/* Add Button - Mobile view (visible only on xs) */}
-          <button
-            onClick={handleAdd}
-            disabled={!newName.trim()}
-            className="sm:hidden w-full flex items-center justify-center py-3 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 transition-all active:scale-95"
-          >
-            Adicionar Categoria
-          </button>
         </div>
       </div>
 
