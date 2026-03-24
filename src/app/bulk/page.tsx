@@ -22,7 +22,7 @@ function parseText(raw: string): ParsedRow[] {
 
 export default function BulkPage() {
   const router = useRouter();
-  const { addCards, categories, languages } = useFlashcards();
+  const { importCards, categories, languages } = useFlashcards();
   const [text, setText] = useState("");
   const [language, setLanguage] = useState(languages[0]?.name || "Inglês");
   const [category, setCategory] = useState("");
@@ -39,7 +39,7 @@ export default function BulkPage() {
 
   const handleImport = () => {
     const toAdd = parsed.filter((_, i) => selected.has(i) && parsed[i].valid);
-    addCards(toAdd.map((r) => ({ front: r.front, back: r.back, notes: r.notes, language, category: category || undefined })));
+    importCards(toAdd.map((r) => ({ front: r.front, back: r.back, notes: r.notes, language, category: category || undefined })));
     setStep("done");
   };
 
