@@ -13,11 +13,11 @@ interface Props {
 
 export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) {
   const router = useRouter();
-  const { categories } = useFlashcards();
+  const { categories, languages } = useFlashcards();
   const [form, setForm] = useState({
     front: initialData?.front ?? "",
     back: initialData?.back ?? "",
-    language: initialData?.language ?? "Inglês",
+    language: initialData?.language ?? (languages[0]?.name || "Inglês"),
     category: initialData?.category ?? "",
     notes: initialData?.notes ?? "",
   });
@@ -56,7 +56,8 @@ export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) 
     }
   };
 
-  const flag = LANGUAGE_FLAGS[form.language] ?? "🌍";
+  const currentLangObj = languages.find(l => l.name === form.language);
+  const flag = currentLangObj?.flag || LANGUAGE_FLAGS[form.language] || "🌍";
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="max-w-xl mx-auto">
@@ -88,7 +89,11 @@ export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) 
             <label className="block text-xs font-medium text-text-3 uppercase tracking-wider mb-1.5">Idioma</label>
             <select value={form.language} onChange={(e) => setForm({ ...form, language: e.target.value })}
               className="w-full bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-text text-sm focus:outline-none focus:border-accent transition-colors appearance-none cursor-pointer">
-              {LANGUAGES.map((l) => <option key={l} value={l}>{LANGUAGE_FLAGS[l]} {l}</option>)}
+              {languages.map((l) => (
+                <option key={l.id} value={l.name}>
+                  {l.flag} {l.name}
+                </option>
+              ))}
             </select>
           </div>
           <div>
@@ -108,7 +113,7 @@ export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) 
           </label>
           <input type="text" value={form.front}
             onChange={(e) => { setForm({ ...form, front: e.target.value }); setErrors({ ...errors, front: "" }); }}
-            placeholder={`ex: ${form.language === "Inglês" ? "Serendipity" : form.language === "Espanhol" ? "Madrugada" : form.language === "Japonês" ? "木漏れ日" : "palavra..."}`}
+            placeholder={`ex: ${form.language === "Inglês" ? "Running" : form.language === "Espanhol" ? "Madrugada" : "palavra..."}`}
             className={`w-full bg-surface-2 border ${errors.front ? "border-red-500/60" : "border-border"} rounded-xl px-4 py-3 text-text placeholder-text-3 text-base focus:outline-none focus:border-accent transition-colors`}
           />
           {errors.front && <p className="text-red-400 text-xs mt-1">{errors.front}</p>}
@@ -137,7 +142,7 @@ export default function FlashcardForm({ initialData, onSubmit, isEdit }: Props) 
           </button>
           <AnimatePresence>
             {showNotes && (
-              <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
                 <input type="text" value={form.notes}
                   onChange={(e) => setForm({ ...form, notes: e.target.value })}
                   placeholder='ex: "She discovered the café by serendipity."'

@@ -5,7 +5,7 @@ import Navbar from "@/components/Navbar";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { useFlashcards } from "@/hooks/useFlashcards";
-import { Category } from "@/types/flashcard";
+import { Category, UserLanguage } from "@/types/flashcard";
 import Modal from "@/components/Modal";
 import CategoryWordsModal from "@/components/CategoryWordsModal";
 
@@ -20,6 +20,8 @@ export default function SettingsPage() {
   const [newName, setNewName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
   const [isProfileExpanded, setIsProfileExpanded] = useState(false);
+  const [isCategoriesExpanded, setIsCategoriesExpanded] = useState(false);
+  const [isLanguagesExpanded, setIsLanguagesExpanded] = useState(false);
 
   useEffect(() => {
     // Check if app is already installed
@@ -222,14 +224,97 @@ export default function SettingsPage() {
             </section>
 
           {/* Categories Section */}
-          <section className="bg-surface border border-border rounded-2xl p-6">
-            <h2 className="text-lg font-bold text-text mb-1 flex items-center gap-2">
-              <span className="w-8 h-8 rounded-lg bg-fuchsia-500/10 text-fuchsia-400 flex items-center justify-center text-sm">📁</span>
-              Gerenciar Categorias
-            </h2>
-            <p className="text-text-3 text-sm mb-6">Crie e personalize categorias para organizar seus flashcards.</p>
-            
-            <CategoryManager />
+          <section className="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm transition-all duration-300">
+            <button 
+              onClick={() => setIsCategoriesExpanded(!isCategoriesExpanded)}
+              className="w-full flex items-center justify-between p-5 hover:bg-surface-2/40 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 text-fuchsia-400 flex items-center justify-center text-sm border border-fuchsia-500/10">
+                  📁
+                </div>
+                <div className="text-left">
+                  <h2 className="text-base font-bold text-text flex items-center gap-2">
+                    Gerenciar Categorias
+                  </h2>
+                  <p className="text-[11px] text-text-3 uppercase tracking-widest font-medium">
+                    {isCategoriesExpanded ? "Ver menos" : "Ver opções"}
+                  </p>
+                </div>
+              </div>
+              <motion.div
+                animate={{ rotate: isCategoriesExpanded ? 180 : 0 }}
+                className="text-text-3 group-hover:text-text transition-colors"
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </motion.div>
+            </button>
+            <AnimatePresence>
+              {isCategoriesExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-6 pt-0">
+                    <p className="text-text-3 text-sm mb-6">Crie e personalize categorias para organizar seus flashcards.</p>
+                    <CategoryManager />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </section>
+
+          {/* Languages Section */}
+          <section className="bg-surface border border-border rounded-2xl overflow-hidden shadow-sm transition-all duration-300">
+            <button 
+              onClick={() => setIsLanguagesExpanded(!isLanguagesExpanded)}
+              className="w-full flex items-center justify-between p-5 hover:bg-surface-2/40 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 flex items-center justify-center text-sm border border-orange-500/10">
+                  🌍
+                </div>
+                <div className="text-left">
+                  <h2 className="text-base font-bold text-text flex items-center gap-2">
+                    Idiomas de Interesse
+                  </h2>
+                  <p className="text-[11px] text-text-3 uppercase tracking-widest font-medium">
+                    {isLanguagesExpanded ? "Ver menos" : "Ver opções"}
+                  </p>
+                </div>
+              </div>
+              <motion.div
+                animate={{ rotate: isLanguagesExpanded ? 180 : 0 }}
+                className="text-text-3 group-hover:text-text transition-colors"
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
+              </motion.div>
+            </button>
+            <AnimatePresence>
+              {isLanguagesExpanded && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-6 pt-0">
+                    <p className="text-text-3 text-sm mb-6">Selecione os idiomas que você está estudando no momento.</p>
+                    <LanguageManager />
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </section>
 
           {/* Preferences Section */}
@@ -339,17 +424,148 @@ export default function SettingsPage() {
 
 const PRESET_COLORS = ["#818CF8", "#F472B6", "#34D399", "#FBBF24", "#60A5FA", "#A78BFA", "#FB7185", "#4ADE80", "#2DD4BF", "#FACC15", "#94A3B8"];
 
-function CategoryManager() {
-  const { categories, cards, addCategory, deleteCategory } = useFlashcards();
+function LanguageManager() {
+  const { languages, addLanguage, deleteLanguage } = useFlashcards();
   const [newName, setNewName] = useState("");
-  const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
-  const [catToDelete, setCatToDelete] = useState<Category | null>(null);
-  const [catToView, setCatToView] = useState<Category | null>(null);
+  const [selectedFlag, setSelectedFlag] = useState("🇺🇸");
+  const [langToDelete, setLangToDelete] = useState<UserLanguage | null>(null);
 
   const handleAdd = () => {
     if (!newName.trim()) return;
-    addCategory(newName.trim(), selectedColor);
+    addLanguage(newName.trim(), selectedFlag);
     setNewName("");
+  };
+
+  const commonFlags = ["🇺🇸", "🇪🇸", "🇫🇷", "🇩🇪", "🇮🇹", "🇯🇵", "🇨🇳", "🇰🇷", "🇷🇺", "🇸🇦", "🌏"];
+
+  return (
+    <div className="space-y-6">
+      <div className="p-5 bg-surface-2/40 rounded-2xl border border-border/30 backdrop-blur-sm">
+        <label className="block text-[11px] font-bold text-text-3 uppercase tracking-widest mb-4">Adicionar Idioma</label>
+        
+        <div className="space-y-5">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex-1">
+              <input
+                type="text"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+                placeholder="Ex: Italiano, Russo..."
+                className="w-full bg-surface-3/50 border border-border rounded-xl px-4 py-3 text-sm text-text placeholder-text-3 outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all"
+              />
+            </div>
+            
+            <button
+              onClick={handleAdd}
+              disabled={!newName.trim()}
+              className="px-6 py-3 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
+            >
+              Adicionar
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            <p className="text-[10px] text-text-3 font-bold uppercase tracking-wider">Selecione uma bandeira</p>
+            <div className="flex flex-wrap gap-2">
+              {commonFlags.map((f) => (
+                <button
+                  key={f}
+                  onClick={() => setSelectedFlag(f)}
+                  className={`w-9 h-9 flex items-center justify-center rounded-xl text-lg transition-all border ${
+                    selectedFlag === f ? "bg-accent/20 border-accent scale-110" : "bg-surface-3 border-border/30 hover:border-text-3"
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <AnimatePresence mode="popLayout">
+          {languages.map((lang: UserLanguage) => (
+            <motion.div
+              key={lang.id}
+              layout
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="group flex items-center justify-between p-3 bg-surface-2/30 border border-border/30 rounded-xl hover:border-accent/40 transition-all"
+            >
+              <div className="flex items-center gap-3">
+                <span className="text-xl">{lang.flag}</span>
+                <span className="text-sm font-medium text-text">{lang.name}</span>
+              </div>
+              <button
+                onClick={() => setLangToDelete(lang)}
+                className="opacity-0 group-hover:opacity-100 p-2 text-text-3 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                </svg>
+              </button>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      <AnimatePresence>
+        {langToDelete && (
+          <Modal isOpen={true} onClose={() => setLangToDelete(null)} title="Remover Idioma">
+            <div className="space-y-4">
+              <div className="text-center">
+                <span className="text-4xl block mb-2">{langToDelete.flag}</span>
+                <p className="text-text font-medium text-lg">Remover {langToDelete.name}?</p>
+                <p className="text-text-2 text-sm mt-1">Este idioma deixará de aparecer na criação de novos cards, mas os cards existentes não serão alterados.</p>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button onClick={() => setLangToDelete(null)} className="flex-1 px-4 py-2.5 rounded-xl border border-border text-text-2 text-sm font-medium">Cancelar</button>
+                <button onClick={() => { deleteLanguage(langToDelete.id); setLangToDelete(null); }} className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-sm font-bold">Remover</button>
+              </div>
+            </div>
+          </Modal>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function CategoryManager() {
+  const { categories, cards, addCategory, deleteCategory, updateCategory } = useFlashcards();
+  const [newName, setNewName] = useState("");
+  const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
+  const [editingCat, setEditingCat] = useState<Category | null>(null);
+  const [catToDelete, setCatToDelete] = useState<Category | null>(null);
+  const [catToView, setCatToView] = useState<Category | null>(null);
+
+  const handleSave = () => {
+    if (!newName.trim()) return;
+    
+    if (editingCat) {
+      updateCategory(editingCat.id, { name: newName.trim(), color: selectedColor });
+      setEditingCat(null);
+    } else {
+      addCategory(newName.trim(), selectedColor);
+    }
+    
+    setNewName("");
+    setSelectedColor(PRESET_COLORS[0]);
+  };
+
+  const startEdit = (cat: Category) => {
+    setEditingCat(cat);
+    setNewName(cat.name);
+    setSelectedColor(cat.color || PRESET_COLORS[0]);
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const cancelEdit = () => {
+    setEditingCat(null);
+    setNewName("");
+    setSelectedColor(PRESET_COLORS[0]);
   };
 
   const getCardsInCat = (catName: string) => {
@@ -365,8 +581,10 @@ function CategoryManager() {
 
   return (
     <div className="space-y-6">
-      <div className="p-5 bg-surface-2/40 rounded-2xl border border-border/30 backdrop-blur-sm">
-        <label className="block text-[11px] font-bold text-text-3 uppercase tracking-widest mb-4">Nova Categoria</label>
+      <div className="p-5 bg-surface-2/40 rounded-2xl border border-border/30 backdrop-blur-sm relative">
+        <label className="block text-[11px] font-bold text-text-3 uppercase tracking-widest mb-4">
+          {editingCat ? "Editar Categoria" : "Nova Categoria"}
+        </label>
         
         <div className="space-y-5">
           <div className="flex flex-col sm:flex-row gap-3">
@@ -380,13 +598,23 @@ function CategoryManager() {
               />
             </div>
             
-            <button
-              onClick={handleAdd}
-              disabled={!newName.trim()}
-              className="px-6 py-3 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
-            >
-              Adicionar
-            </button>
+            <div className="flex gap-2">
+              {editingCat && (
+                <button
+                  onClick={cancelEdit}
+                  className="px-4 py-3 border border-border text-text-3 hover:text-text rounded-xl text-sm font-bold transition-all"
+                >
+                  Cancelar
+                </button>
+              )}
+              <button
+                onClick={handleSave}
+                disabled={!newName.trim()}
+                className="flex-1 px-6 py-3 bg-accent hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl text-sm font-bold shadow-lg shadow-accent/20 transition-all hover:scale-[1.02] active:scale-95 whitespace-nowrap"
+              >
+                {editingCat ? "Salvar" : "Adicionar"}
+              </button>
+            </div>
           </div>
 
           <div className="space-y-3">
@@ -429,7 +657,7 @@ function CategoryManager() {
       {/* Categories List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <AnimatePresence mode="popLayout">
-          {categories.map((cat: any) => {
+          {categories.map((cat: Category) => {
             const count = getCardsInCat(cat.name);
             return (
               <motion.div
@@ -448,18 +676,33 @@ function CategoryManager() {
                     <p className="text-[10px] text-text-3">{count} card{count !== 1 ? "s" : ""}</p>
                   </div>
                 </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setCatToDelete(cat);
-                  }}
-                  className="opacity-0 group-hover:opacity-100 p-2 text-text-3 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
-                  title="Excluir categoria"
-                >
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                  </svg>
-                </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      startEdit(cat);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-2 text-text-3 hover:text-accent hover:bg-accent/10 rounded-lg transition-all"
+                    title="Editar categoria"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setCatToDelete(cat);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-2 text-text-3 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                    title="Excluir categoria"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 6h18m-2 0v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6m3 0V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                    </svg>
+                  </button>
+                </div>
               </motion.div>
             );
           })}

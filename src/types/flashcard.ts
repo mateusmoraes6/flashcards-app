@@ -5,6 +5,12 @@ export interface Category {
   icon?: string;
 }
 
+export interface UserLanguage {
+  id: string;
+  name: string;
+  flag?: string;
+}
+
 export interface Flashcard {
   id: string;
   front: string;

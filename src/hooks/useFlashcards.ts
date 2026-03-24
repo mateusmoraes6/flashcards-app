@@ -1,11 +1,17 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { Flashcard, ReviewSession, Category, DEFAULT_CATEGORIES } from "@/types/flashcard";
+import { Flashcard, ReviewSession, Category, DEFAULT_CATEGORIES, UserLanguage, LANGUAGES, LANGUAGE_FLAGS } from "@/types/flashcard";
 import { v4 as uuidv4 } from "uuid";
 
 const STORAGE_KEY = "lexiflash_cards";
 const SESSIONS_KEY = "lexiflash_sessions";
 const CATEGORIES_KEY = "lexiflash_categories";
+const LANGUAGES_KEY = "lexiflash_languages";
+
+const DEFAULT_LANGUAGES: UserLanguage[] = [
+  { id: "1", name: "Inglês", flag: "🇺🇸" },
+  { id: "2", name: "Espanhol", flag: "🇪🇸" },
+];
 
 const SAMPLE_CARDS: Flashcard[] = [
   { id: uuidv4(), front: "Serendipity", back: "Encontrar algo bom sem estar procurando", notes: "\"It was pure serendipity that we met.\"", language: "Inglês", category: "Cotidiano", createdAt: new Date().toISOString(), masteryLevel: 0, timesReviewed: 0, timesCorrect: 0 },
@@ -28,6 +34,7 @@ export function useFlashcards() {
   const [cards, setCards] = useState<Flashcard[]>([]);
   const [sessions, setSessions] = useState<ReviewSession[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [languages, setLanguages] = useState<UserLanguage[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -43,9 +50,14 @@ export function useFlashcards() {
       setCategories(rawC ? JSON.parse(rawC) : DEFAULT_CATEGORIES);
       if (!rawC) localStorage.setItem(CATEGORIES_KEY, JSON.stringify(DEFAULT_CATEGORIES));
 
+      const rawL = localStorage.getItem(LANGUAGES_KEY);
+      setLanguages(rawL ? JSON.parse(rawL) : DEFAULT_LANGUAGES);
+      if (!rawL) localStorage.setItem(LANGUAGES_KEY, JSON.stringify(DEFAULT_LANGUAGES));
+
     } catch { 
       setCards([]); 
       setCategories(DEFAULT_CATEGORIES);
+      setLanguages(DEFAULT_LANGUAGES);
     }
     setIsLoaded(true);
   }, []);
@@ -63,6 +75,11 @@ export function useFlashcards() {
   const persistCategories = useCallback((updated: Category[]) => {
     setCategories(updated);
     localStorage.setItem(CATEGORIES_KEY, JSON.stringify(updated));
+  }, []);
+
+  const persistLanguages = useCallback((updated: UserLanguage[]) => {
+    setLanguages(updated);
+    localStorage.setItem(LANGUAGES_KEY, JSON.stringify(updated));
   }, []);
 
   const addCard = useCallback((data: Omit<Flashcard, "id" | "createdAt">) => {
@@ -110,7 +127,8 @@ export function useFlashcards() {
     persist([]);
     persistSessions([]);
     persistCategories(DEFAULT_CATEGORIES);
-  }, [persist, persistSessions, persistCategories]);
+    persistLanguages(DEFAULT_LANGUAGES);
+  }, [persist, persistSessions, persistCategories, persistLanguages]);
 
   // Categories CRUD
   const addCategory = useCallback((name: string, color?: string, icon?: string) => {
@@ -120,8 +138,21 @@ export function useFlashcards() {
   }, [categories, persistCategories]);
 
   const updateCategory = useCallback((id: string, data: Partial<Omit<Category, "id">>) => {
-    persistCategories(categories.map((c) => (c.id === id ? { ...c, ...data } : c)));
-  }, [categories, persistCategories]);
+    const oldCat = categories.find((c) => c.id === id);
+    if (!oldCat) return;
+
+    // 1. Update categories list
+    const newCategories = categories.map((c) => (c.id === id ? { ...c, ...data } : c));
+    persistCategories(newCategories);
+
+    // 2. Update cards if name changed
+    if (data.name && data.name !== oldCat.name) {
+      const updatedCards = cards.map((c) => 
+        c.category === oldCat.name ? { ...c, category: data.name } : c
+      );
+      persist(updatedCards);
+    }
+  }, [categories, cards, persist, persistCategories]);
 
   const deleteCategory = useCallback((id: string) => {
     const category = categories.find((c) => c.id === id);
@@ -133,6 +164,17 @@ export function useFlashcards() {
     }
     persistCategories(categories.filter((c) => c.id !== id));
   }, [categories, cards, persist, persistCategories]);
+
+  // Languages CRUD
+  const addLanguage = useCallback((name: string, flag?: string) => {
+    const language: UserLanguage = { id: uuidv4(), name, flag: flag || "🌍" };
+    persistLanguages([...languages, language]);
+    return language;
+  }, [languages, persistLanguages]);
+
+  const deleteLanguage = useCallback((id: string) => {
+    persistLanguages(languages.filter((l) => l.id !== id));
+  }, [languages, persistLanguages]);
 
   // Returns cards sorted by difficulty (weak cards first)
   const weakCards = useCallback(() => {
@@ -146,10 +188,11 @@ export function useFlashcards() {
   }, [cards]);
 
   return { 
-    cards, sessions, categories, isLoaded, 
+    cards, sessions, categories, languages, isLoaded, 
     addCard, addCards, updateCard, deleteCard, getCard, recordAnswer, 
     saveSession, importCards, clearAllData, weakCards,
-    addCategory, updateCategory, deleteCategory
+    addCategory, updateCategory, deleteCategory,
+    addLanguage, deleteLanguage
   };
 }
 

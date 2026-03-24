@@ -22,9 +22,9 @@ function parseText(raw: string): ParsedRow[] {
 
 export default function BulkPage() {
   const router = useRouter();
-  const { addCards, categories } = useFlashcards();
+  const { addCards, categories, languages } = useFlashcards();
   const [text, setText] = useState("");
-  const [language, setLanguage] = useState("Inglês");
+  const [language, setLanguage] = useState(languages[0]?.name || "Inglês");
   const [category, setCategory] = useState("");
   const [step, setStep] = useState<"input" | "preview" | "done">("input");
   const [parsed, setParsed] = useState<ParsedRow[]>([]);
@@ -80,7 +80,11 @@ export default function BulkPage() {
                   <label className="block text-xs font-medium text-text-3 uppercase tracking-wider mb-1.5">Idioma</label>
                   <select value={language} onChange={(e) => setLanguage(e.target.value)}
                     className="w-full bg-surface-2 border border-border rounded-xl px-4 py-2.5 text-text text-sm focus:outline-none focus:border-accent transition-colors appearance-none">
-                    {LANGUAGES.map((l) => <option key={l} value={l}>{LANGUAGE_FLAGS[l]} {l}</option>)}
+                    {languages.map((l) => (
+                      <option key={l.id} value={l.name}>
+                        {l.flag} {l.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div>
