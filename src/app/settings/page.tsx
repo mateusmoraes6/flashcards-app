@@ -24,18 +24,31 @@ export default function SettingsPage() {
   const [isLanguagesExpanded, setIsLanguagesExpanded] = useState(false);
 
   useEffect(() => {
-    // Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone) {
       setIsInstalled(true);
+    }
+
+    // Check if prompt was already captured globally
+    if ((window as any).deferredPrompt) {
+      setDeferredPrompt((window as any).deferredPrompt);
+      setIsInstallable(true);
     }
 
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
+      (window as any).deferredPrompt = e;
       setIsInstallable(true);
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+
+    window.addEventListener("appinstalled", () => {
+      setIsInstalled(true);
+      setIsInstallable(false);
+      setDeferredPrompt(null);
+      (window as any).deferredPrompt = null;
+    });
 
     // Fetch user profile
     const fetchUser = async () => {
@@ -62,11 +75,9 @@ export default function SettingsPage() {
     const { outcome } = await deferredPrompt.userChoice;
 
     if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
+      setIsInstalled(true);
       setIsInstallable(false);
       setDeferredPrompt(null);
-    } else {
-      console.log('User dismissed the install prompt');
     }
   };
 
@@ -368,10 +379,10 @@ export default function SettingsPage() {
                     disabled={!isInstallable}
                     className={`px-6 py-2 rounded-xl font-bold text-sm transition-all active:scale-95 ${isInstallable
                         ? "bg-accent text-white shadow-lg shadow-accent/20 hover:bg-accent/90"
-                        : "bg-border text-text-3 cursor-not-allowed"
+                        : "bg-surface-3 text-text-3 border border-border cursor-not-allowed"
                       }`}
                   >
-                    {isInstallable ? "Instalar agora" : "Já instalado ou não suportado"}
+                    Instalar agora
                   </button>
                 )}
                 {isInstalled && (

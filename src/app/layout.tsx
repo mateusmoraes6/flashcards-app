@@ -4,6 +4,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "LexiFlash - flashcards",
   description: "Fixação de vocabulários",
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.png",
+    apple: "/apple-touch-icon.png",
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -46,6 +51,10 @@ export default function RootLayout({
                   );
                 });
               }
+              window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                window.deferredPrompt = e;
+              });
             `,
           }}
         />
