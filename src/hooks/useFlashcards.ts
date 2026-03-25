@@ -278,9 +278,13 @@ export function useFlashcards() {
     if (!error && news) setCards(prev => [...news.map(mapCardFromDB), ...prev]);
   }, [user, supabase]);
 
+  const getCard = useCallback((id: string) => {
+    return cards.find(c => c.id === id);
+  }, [cards]);
+
   return { 
     cards, sessions, categories, languages, isLoaded, 
-    addCard, updateCard, deleteCard, recordAnswer, 
+    addCard, updateCard, deleteCard, recordAnswer, getCard,
     saveSession, weakCards, addCategory, updateCategory, deleteCategory,
     addLanguage, deleteLanguage, importCards
   };
