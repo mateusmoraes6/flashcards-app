@@ -43,8 +43,8 @@ export default function Navbar() {
       >
         <div className="p-6 flex items-center gap-3">
           <Link href="/dashboard" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 rounded-xl bg-accent flex items-center justify-center shadow-[0_0_16px_rgba(99,102,241,0.5)] group-hover:shadow-[0_0_24px_rgba(99,102,241,0.7)] transition-all">
-              <span className="text-white font-bold font-display">L</span>
+            <div className="w-9 h-9 rounded-xl overflow-hidden flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.3)] group-hover:shadow-[0_0_30px_rgba(34,211,238,0.5)] transition-all">
+              <img src="/icon.png" alt="LexiFlash logo" className="w-full h-full object-cover" />
             </div>
             <span className="font-display font-bold text-text tracking-tight text-lg hidden lg:block">LexiFlash</span>
           </Link>

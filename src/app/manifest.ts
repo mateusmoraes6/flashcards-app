@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Flashcards app for languages and vocabulary',
     start_url: '/',
     display: 'standalone',
-    background_color: '#0e0e12',
-    theme_color: '#6366f1',
+    background_color: '#020205',
+    theme_color: '#22d3ee',
     icons: [
       {
         src: '/icon-192x192.png',
