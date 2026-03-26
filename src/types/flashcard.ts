@@ -42,10 +42,10 @@ export const MASTERY_LABELS: Record<number, string> = {
 };
 
 export const MASTERY_COLORS: Record<number, string> = {
-  0: "#5C6A8A",
-  1: "#F59E0B",
+  0: "#22D3EE",
+  1: "#44c760ff",
   2: "#818CF8",
-  3: "#22D3EE",
+  3: "#F59E0B",
 };
 
 export const LANGUAGES = [

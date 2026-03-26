@@ -82,11 +82,11 @@ export default function HomePage() {
   };
 
   const masteryFilters = [
-    { val: "all", label: "Todos", color: "#9AA5C4" },
-    { val: "0",   label: "Novos",      color: "#5C6A8A" },
-    { val: "1",   label: "Aprendendo", color: "#F59E0B" },
-    { val: "2",   label: "Familiar",   color: "#818CF8" },
-    { val: "3",   label: "Dominados",  color: "#22D3EE" },
+    { val: "all", label: "Todos", color: "#6366F1" },
+    { val: "0", label: "Novos", color: "#22D3EE" },
+    { val: "1", label: "Aprendendo", color: "#A78BFA" },
+    { val: "2", label: "Familiar", color: "#818CF8" },
+    { val: "3", label: "Dominados", color: "#F59E0B" },
   ];
 
   return (
@@ -122,9 +122,9 @@ export default function HomePage() {
         {/* Stats */}
         {isLoaded && cards.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-            <StatCard value={stats.total} label="Total" icon={<CardsIcon />} />
+            <StatCard value={stats.total} label="Total" icon={<CardsIcon />} color="#6366F1" />
             <StatCard value={stats.newCards} label="Novos" icon={<SparklesIcon />} color="#22D3EE" />
-            <StatCard value={stats.totalReviewed} label="Revisados" icon={<EyeIcon />} />
+            <StatCard value={stats.totalReviewed} label="Revisados" icon={<EyeIcon />} color="#10B981" />
             <StatCard value={stats.mastered} label="Dominados" icon={<StarIcon />} color="#F59E0B" />
           </motion.div>
         )}
@@ -151,7 +151,7 @@ export default function HomePage() {
         {isLoaded && cards.length > 0 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="flex flex-col sm:flex-row gap-3 mb-6">
             <div className="relative flex-1">
-              <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-3 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-3 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
               <input type="text" placeholder="Buscar flashcards..." value={search} onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-surface border border-border rounded-xl pl-10 pr-10 py-2.5 text-sm text-text placeholder-text-3 focus:outline-none focus:border-accent transition-colors" />
               {search && (
@@ -218,7 +218,7 @@ function StatCard({ value, label, icon, color }: { value: number; label: string;
     <div className="bg-surface border border-border rounded-2xl p-4 flex items-center gap-3">
       <div className="text-accent" style={color ? { color } : {}}>{icon}</div>
       <div>
-        <p className="font-display text-2xl font-bold leading-none mb-0.5" style={{ color: color ?? "var(--text)" }}>{value}</p>
+        <p className="font-display text-2xl font-bold text-text leading-none mb-0.5">{value}</p>
         <p className="text-[10px] text-text-3 font-medium uppercase tracking-wider">{label}</p>
       </div>
     </div>
