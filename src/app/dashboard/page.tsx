@@ -17,6 +17,7 @@ export default function HomePage() {
   const [filterLang, setFilterLang] = useState("all");
   const [filterMastery, setFilterMastery] = useState("all");
   const [sortBy, setSortBy] = useState<SortKey>("createdAt");
+  const [limit, setLimit] = useState(6);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const filtered = useMemo(() => {
@@ -84,7 +85,7 @@ export default function HomePage() {
   const masteryFilters = [
     { val: "all", label: "Todos", color: "#6366F1" },
     { val: "0", label: "Novos", color: "#22D3EE" },
-    { val: "1", label: "Aprendendo", color: "#A78BFA" },
+    { val: "1", label: "Aprendendo", color: "#44c760" },
     { val: "2", label: "Familiar", color: "#818CF8" },
     { val: "3", label: "Dominados", color: "#F59E0B" },
   ];
@@ -184,11 +185,23 @@ export default function HomePage() {
                 className="text-xs text-accent hover:underline">Limpar filtros</button>
             </motion.div>
           ) : (
-            <AnimatePresence mode="popLayout">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filtered.map((card, i) => <FlashcardCard key={card.id} card={card} index={i} onDelete={deleteCard} onUpdate={updateCard} />)}
-              </div>
-            </AnimatePresence>
+            <>
+              <AnimatePresence mode="popLayout">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filtered.slice(0, limit).map((card, i) => <FlashcardCard key={card.id} card={card} index={i} onDelete={deleteCard} onUpdate={updateCard} />)}
+                </div>
+              </AnimatePresence>
+              
+              {filtered.length > limit && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-8 flex justify-center">
+                  <button onClick={() => setLimit(prev => prev + 6)}
+                    className="px-8 py-3 bg-surface border border-border text-text-2 hover:text-text hover:border-border-light rounded-xl text-sm font-medium transition-all active:scale-[0.98] shadow-sm flex items-center gap-2 group">
+                    Ver mais cards
+                    <svg className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                  </button>
+                </motion.div>
+              )}
+            </>
           )
         }
 
